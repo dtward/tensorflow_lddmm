@@ -56,3 +56,24 @@ def FlowOtherPointsGaussianKernel(qt,pt,x0,sigmaV,T=1.0):
         xt.append(x + xdot*dt)
     return xt
 
+def flow2DGridPointsGaussianKernel(qt,pt,sigmaV,xmin,xmax,nx,ymin,ymax,ny):
+    '''
+    x and y are iterables
+    '''
+    x = tf.linspace(xmin,xmax,nx)
+    y = tf.linspace(ymin,ymax,ny)
+    xe = tf.expand_dims(x,0)
+    xee = tf.expand_dims(xe,2)
+    xeetile = tf.tile(xee,[ngrid,1,1])
+    ye = tf.expand_dims(y,1)
+    yee = tf.expand_dims(ye,2)
+    yeetile = tf.tile(yee,[1,ngrid,1])
+    xygrid = tf.concat(2,[xeetile,yeetile]) # okay this one does not work with broadcasting
+    
+
+    xy = tf.reshape(xygrid,[-1, 2]) # note -1 means calculate the size inorder to fix number of elements
+    xyt = fp.FlowOtherPointsGaussianKernel(qt,pt,xy,sigmaV,T)
+
+    # change the shape back?
+    return tf.reshape(xyt,[ny,nx,-1])
+

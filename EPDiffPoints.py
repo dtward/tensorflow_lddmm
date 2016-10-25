@@ -36,7 +36,11 @@ def EPDiffPointsGausianKernel(q0,p0,sigmaV,nT=10,T=1.0):
         pdotp = tf.matmul(p,tf.transpose(p)) # nxd times dxn = nxn
         K_pdotp_oosigma2 = (K*pdotp)/(sigmaV**2)
         K_pdotp_oosigma2_expand = tf.expand_dims(K,-1)
-        pdot = tf.reduce_sum(K_pdotp_oosigma2*deltaQ,1)
+        K_pdotp_oosigma2_expand_deltaQ = K_pdotp_oosigma2_expand*deltaQ
+        # for some reason this isn't workin gnow
+        # deltaQ size is 3x3x2
+        # K size is 3x3x1
+        pdot = tf.reduce_sum(K_pdotp_oosigma2_expand_deltaQ,1)
         pdott.append(pdot)
 
 

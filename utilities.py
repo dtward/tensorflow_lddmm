@@ -10,7 +10,7 @@ def pairwiseDifference(x1,x2):
 def pairwiseDistanceSquared(x1,x2):
     delta = pairwiseDifference(x1,x2)
     delta2 = delta*delta
-    d2 = tf.reduce_sum(delta2,-1)
+    d2 = tf.reduce_sum(delta2,2)
     return d2
     
     
