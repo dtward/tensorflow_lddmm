@@ -24,15 +24,17 @@ sigmaR = 1.0
 niter = 1000
 epsilon = 1.0e-3
 
+
+
+q0value = np.array([[1.0, 0.0],[0.0,0.0],[0.0,1.0]],dtype=np.float32)
+qtargetvalue = np.array([[2.0,1.0],[-1.0,-1.0],[0.0,1.0]],dtype=np.float32)
+N = q0value.shape[0]
+D = q0value.shape[1]
+
 # set up initial points
 q0 = tf.placeholder(tf.float32,[N,D]) # I will have to feed this in
 qtarget = tf.placeholder(tf.float32,[N,D]) # target
 
-
-q0value = np.array([[1.0, 0.0],[0.0,0.0],[0.0,1.0]])
-qtargetvalue = np.array([[2.0,1.0],[-1.0,-1.0],[0.0,1.0]])
-N = q0value.shape[0]
-D = q0value.shape[1]
 
 # set up variable to optimize, this is momentum
 p0 = tf.Variable(tf.zeros([N,D])) # I will optimize over this
@@ -61,7 +63,19 @@ with tf.Session() as sess:
         if _%10 == 0:
             print('iteration: {}, cost function: {}'.format(_,out[1]))
     to_evaluate = [qt,pt]
+    #out_final = sess.run(to_evaluate,feed_dict=feed_dict)
+    # this line works on my laptop but not at work
+    to_evaluate = qt[1:]
+    to_evaluate.extend(pt)
     out_final = sess.run(to_evaluate,feed_dict=feed_dict)
+    # and put it back into the form I had before
+
+    qtout = [q0value]
+    qtout.extend(out_final[:nT])
+    out_final = [qtout, out_final[nT:]]
+    
+
+    
 
     # get a set of points and flow them
     ngrid = 30
@@ -90,7 +104,7 @@ plt.close('all')
 plt.scatter(xytvalues[-1][:,0],xytvalues[-1][:,1],color='k')
 
 
-qplot = np.array([tmp for tmp in out_final[0]])
+qplot = np.array([tmp for tmp in out_final[0]],dtype=np.float32)
 
 for i in xrange(N):
     plt.scatter(qplot[:,i,0],qplot[:,i,1],color='b')

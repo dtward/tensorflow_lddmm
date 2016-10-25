@@ -11,6 +11,9 @@ def FlowPointsGaussianKernel(q0,pt,sigmaV,T=1.0):
     From the size of pt I can get nT
     but I definitely do need T
     '''
+    q0 = tf.convert_to_tensor(q0)
+    pt = [tf.convert_to_tensor(p) for p in pt]
+    
     nT = len(pt)
     dt = tf.constant(T/nT)
     qt = [q0]
@@ -36,7 +39,14 @@ def FlowOtherPointsGaussianKernel(qt,pt,x0,sigmaV,T=1.0):
     '''
     move other points after calculatint EPDiff flow
     this will be useful for a control points approach, or for visualizing deformed grids, etc.
+    qt and pt are a list of tensors, or numpy arrays
+    x0 is a tensor to be flowed, or numpy array
     '''
+
+    #qt = [tf.convert_to_tensor(q) for q in qt]
+    #pt = [tf.convert_to_tensor(p) for p in pt]
+    #x0 = tf.convert_to_tensor(x0)
+    
     nT = len(pt)
     dt = tf.constant(T/nT)
     xt = [x0]
@@ -59,6 +69,7 @@ def FlowOtherPointsGaussianKernel(qt,pt,x0,sigmaV,T=1.0):
 def flow2DGridPointsGaussianKernel(qt,pt,sigmaV,xmin,xmax,nx,ymin,ymax,ny):
     '''
     x and y are iterables
+    still working here
     '''
     x = tf.linspace(xmin,xmax,nx)
     y = tf.linspace(ymin,ymax,ny)
