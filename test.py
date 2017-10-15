@@ -113,9 +113,3 @@ plt.scatter(qtargetvalue[:,0],qtargetvalue[:,1],color='r')
 plt.pause(0.1) # this will draw it
 
 # AWESOME IT WORKS
-
-# now that I have a simple function I can easily build more complex trajectories
-
-
-
-
